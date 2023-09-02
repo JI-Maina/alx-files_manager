@@ -1,6 +1,6 @@
 # Files Manager
 
-[![Coverage Status](https://coveralls.io/repos/github/JI-Maina/alx-files_manager/badge.svg?branch=main)](https://coveralls.io/github/JI-Maina/alx-files_manager?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/JI-Maina/alx-files_manager/badge.svg?branch=master)](https://coveralls.io/github/JI-Maina/alx-files_manager?branch=master)
 
 A simple file management API built with Express, MongoDB, Redis, Bull, and Node.js.
 
