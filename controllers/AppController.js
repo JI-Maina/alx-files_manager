@@ -14,3 +14,6 @@ class AppController {
     };
     response.status(200).send(status);
   }
+}
+
+module.exports = AppController;
