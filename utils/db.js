@@ -6,7 +6,9 @@ class DBClient {
     const port = process.env.DB_PORT || 27017;
     const db = process.env.DB_DATABASE || 'files_manager';
 
-    this.client = new MongoClient(`mongodb://${host}:${port}/${db}`);
+    this.client = new MongoClient(`mongodb://${host}:${port}/${db}`, {
+      useUnifiedTopology: true,
+    });
     this.client.connect();
   }
 
@@ -28,4 +30,4 @@ class DBClient {
 }
 
 const dbClient = new DBClient();
-export default dbClient;
+module.exports = dbClient;

@@ -1,19 +1,27 @@
 const express = require('express');
-const router = express.Router();
+
 const AppController = require('../controllers/AppController');
+const UsersController = require('../controllers/UsersController');
 
-const controllerRouting = (app) => {
-  app.use('/', router);
+const router = express.Router();
 
-  //App Controller - return true if Redis and DB are alive
-  route.get('/status', (req, res) => {
-    AppController.getStatus(req, res);
-  });
+// const controllerRouting = (app) => {
+//  app.use('/', router);
 
-  //return the no of users and files in DB
-  route.get('/stats', (req, res) => {
-    AppController.getStats(req, res);
-  });
-}
+// App Controller - return true if Redis and DB are alive
+// route.get('/status', (req, res) => {
+// AppController.getStatus(req, res);
+// });
 
-module.exports = controllerRouting;
+// return the no of users and files in DB
+// route.get('/stats', (req, res) => {
+// AppController.getStats(req, res);
+// });
+// }
+router.get('/status', AppController.getStatus);
+
+router.get('/stats', AppController.getStats);
+
+router.post('/users', UsersController.postNew);
+
+module.exports = router;
