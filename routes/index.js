@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const AppController = require('../controllers/AppController');
 
-controllerRouting(app) => {
+const controllerRouting = (app) => {
   app.use('/', router);
 
   //App Controller - return true if Redis and DB are alive
@@ -14,5 +14,6 @@ controllerRouting(app) => {
   route.get('/stats', (req, res) => {
     AppController.getStats(req, res);
   });
+}
 
 module.exports = controllerRouting;
