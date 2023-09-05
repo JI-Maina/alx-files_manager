@@ -15,4 +15,4 @@ controllerRouting(app) => {
     AppController.getStats(req, res);
   });
 
-export default controllerRouting;
+module.exports = controllerRouting;
