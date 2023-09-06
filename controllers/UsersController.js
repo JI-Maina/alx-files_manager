@@ -1,6 +1,7 @@
 const sha1 = require('sha1');
 
 const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis');
 
 const postNew = async (req, res) => {
   // destructure email and password from the request
@@ -38,4 +39,21 @@ const postNew = async (req, res) => {
   return res.status(400).json({ error: 'Missing password' }).end();
 };
 
-module.exports = { postNew };
+const getMe = async (req, res) => {
+  const token = req.headers['x-token'];
+  const key = `auth_${token}`;
+
+  const user = await redisClient.get(key);
+  const parsedUser = JSON.parse(user);
+
+  if (user) {
+    return res.status(200).json(parsedUser).end();
+  }
+
+  return res.status(401).json({ error: 'Unauthorized' });
+};
+
+module.exports = {
+  postNew,
+  getMe,
+};
