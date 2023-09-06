@@ -38,9 +38,7 @@ const getDisconnect = async (req, res) => {
   const key = `auth_${token}`;
 
   const user = await redisClient.get(key);
-  console.log(token);
-  console.log(key);
-  console.log(user);
+
   if (user) {
     await redisClient.del(key);
     return res.status(204).end();
