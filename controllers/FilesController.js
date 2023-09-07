@@ -45,4 +45,83 @@ const async postUpload = (req, res) => {
   return response.status(201).send(newFile);
 };
 
+const async getShow = (req, res) => {
+  const fileId = req.params.id;
+
+  cost { userId } = await userUtils.getUserIdAndKey(req);
+
+  const user = await userUtils.getUser({
+    _id: ObjectId(userId),
+  });
+
+  if (!user) return res.status(401).send({ error: 'Unauthorized' });
+  
+  //Mongo condition
+  if (!basicUtils.isValidId(fileId) || !basicUtils.isValidID(userId)) { return res.status(404).send({ error: 'Not found' }); }
+
+  const result = await fileUtils.getFile({
+    _id: ObjectId(fileId),
+    userId: ObjectId(userId),
+  });
+
+  if (!result) return res.status(404).send({ error: 'Not found' });
+
+  const file = fileUtils.processFile(result);
+
+  return res.status(200).send(file);
+}
+
+/**
+ * should retrieve all users file documents for a specific
+ * parentId and with pagination
+ */
+const async getIndex = (req, res) => {
+  const { userId } = await userUtils.getUserIdAndKey(req);
+
+  const user = await userUtils.getUser({
+    _id: ObjectId(userId),
+  });
+
+  if (!user) return res.status(401).send({ error: 'Unauthorized' });
+
+  let parentId = req.query.parentId || '0';
+
+  if (parentId === '0') parentId = 0;
+
+  let page = Number(req.query.page) || 0;
+
+  if (Number.isNaN(page)) page = 0;
+
+  if (parentId !== 0 && parentId !== '0') {
+    if (!basicUtils.isValidId(parentId)) { return res.status(401).send({ error: 'Unauthorized' }); }
+
+    parentId = ObjectId(parentId);
+
+    const folder = await fileUtils.getFile({
+      _id: ObjectId(parentId),
+    });
+
+    if (!folder || folder.type !== 'folder') { return response.status(200).send([]); }
+  }
+
+  const pipeline = [
+    { $match: { parentId } },
+    { $skip: page * 20 },
+    {
+      $limit: 20,
+    },
+  ];
+
+  const fileCursor = await fileUtils.getFilesOfParentId(pipeline);
+
+  const fileList = [];
+  await fileCursor.forEach((doc) => {
+    const document = fileUtils.processFile(doc);
+    fileList.push(document);
+  });
+
+  return response.status(200).send(fileList);
+}
+
+
 module.exports = { postUpload }

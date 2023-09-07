@@ -21,4 +21,8 @@ router.get('/disconnect', AuthController.getDisconnect);
 
 router.get('/users/me', UsersController.getMe);
 
+route.get('/files', FilesController.getIndex);
+
+route.get('/files:id', FilesController.getShow);
+
 module.exports = router;
