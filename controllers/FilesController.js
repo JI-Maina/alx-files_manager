@@ -8,7 +8,7 @@ const dbClient = require('../utils/db')
   // res.status(200).json(req.headers)
 // }
 
-const async postUpload = (req, res) => {
+const postUpload = async(req, res) => {
   const { userId } = await userUtils.getIdAndKey(req);
   
   if (!basicUtils.isValid(userId)) {
@@ -45,10 +45,10 @@ const async postUpload = (req, res) => {
   return response.status(201).send(newFile);
 };
 
-const async getShow = (req, res) => {
+const getShow = async(req, res) => {
   const fileId = req.params.id;
 
-  cost { userId } = await userUtils.getUserIdAndKey(req);
+  const { userId } = await userUtils.getUserIdAndKey(req);
 
   const user = await userUtils.getUser({
     _id: ObjectId(userId),
@@ -75,7 +75,7 @@ const async getShow = (req, res) => {
  * should retrieve all users file documents for a specific
  * parentId and with pagination
  */
-const async getIndex = (req, res) => {
+const getIndex = async(req, res) => {
   const { userId } = await userUtils.getUserIdAndKey(req);
 
   const user = await userUtils.getUser({
@@ -124,4 +124,8 @@ const async getIndex = (req, res) => {
 }
 
 
-module.exports = { postUpload }
+module.exports = { 
+  postUpload,
+  getShow,
+  getIndex,
+};
