@@ -1,5 +1,6 @@
-const dbClient = require('../utils/db')
-const redisClient = require('../utils/redis')
+const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis');
+const { v4: uuidv4 } = require('uuid');
 
 /**
  * create a new file in db and disk
@@ -34,8 +35,43 @@ const postUpload = async (req, res) => {
     }
     
     if (type === 'folder') {
-      
+      const newFolder = {
+        userId: userObj.id,
+        name,
+        type,
+        parentId: parentId || 0,
+        isPublic: isPublic || false,
+      };
+
+      const createdFolder = result.ops[0];
+      return res.status(201).json(createdFolder);
+    } else {
+      const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
+      const localPath = `${FOLDER_PATH}/${uuidv4}`;
+
+      const fileData = Buffer.from(data, 'base64');
+
+      try {
+        await fs.promise.writeFile(localPath, fileData);
+
+        const newFile = {
+          userId: userObj.id,
+          name,
+          type,
+          parentId: parentId || 0,
+          isPublic: isPublic || false,
+          localPath: fileName,
+        };
+
+        const result = await collection.insertOne(newFile);
+
+        const createdFile = result.ops[0];
+      } catch (error) {
+        console.error('File storage error:', error);
+        return res.status(500).json({ error: 'File storage error' });
+      }
     }
+
     res.status(200).json({ name, type, parentId, isPublic, data })
     
   }
